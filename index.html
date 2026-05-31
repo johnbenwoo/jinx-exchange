@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Jinx Exchange</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🔄</span>
+                <h1>The Jinx Exchange</h1>
+            </div>
+            <p class="tagline">Stop jinxing your team. Find your anti-fan soulmate.</p>
+            <div id="user-status" class="user-status hidden"></div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs" id="nav-tabs">
+            <button class="nav-tab active" data-tab="home">Home</button>
+            <button class="nav-tab" data-tab="find-match">Upcoming Games</button>
+            <button class="nav-tab" data-tab="my-pacts">My Pacts</button>
+            <button class="nav-tab" data-tab="stats">Stats</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Home / Onboarding -->
+            <section id="home" class="tab-content active">
+                <div id="onboarding" class="onboarding">
+                    <div class="card welcome-card">
+                        <h2>Welcome, Superstitious Fan!</h2>
+                        <p>We get it. Every time you watch, they lose. Every. Single. Time.</p>
+                        <p>The Jinx Exchange matches you with fans of opposing teams who share your curse. You watch their team, they watch yours. The jinx cancels out. Science? Maybe not. But it feels right.</p>
+
+                        <div class="setup-form">
+                            <h3>Quick Setup</h3>
+
+                            <div class="form-group">
+                                <label for="username">Your Name</label>
+                                <input type="text" id="username" placeholder="Enter your name">
+                            </div>
+
+                            <div class="form-group">
+                                <label>How Bad Is Your Jinx?</label>
+                                <div class="jinx-level-selector">
+                                    <button class="jinx-btn" data-level="1">😬<br><small>Mild</small></button>
+                                    <button class="jinx-btn" data-level="2">😰<br><small>Moderate</small></button>
+                                    <button class="jinx-btn selected" data-level="3">😱<br><small>Severe</small></button>
+                                    <button class="jinx-btn" data-level="4">💀<br><small>Cursed</small></button>
+                                </div>
+                            </div>
+
+                            <button id="save-profile" class="btn btn-primary btn-large">Start Breaking the Jinx</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dashboard" class="dashboard hidden">
+                    <div class="card stats-overview">
+                        <h2>Your Jinx Dashboard</h2>
+                        <div class="quick-stats">
+                            <div class="stat-box">
+                                <span class="stat-number" id="total-pacts">0</span>
+                                <span class="stat-label">Total Pacts</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-number" id="success-rate">--%</span>
+                                <span class="stat-label">Success Rate</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-number" id="jinx-score">0</span>
+                                <span class="stat-label">Jinx Score</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🔥 Active Pacts</h3>
+                        <div id="active-pacts-preview"></div>
+                        <button class="btn btn-secondary" data-navigate="my-pacts">View All Pacts</button>
+                    </div>
+
+                    <div class="card cta-card">
+                        <h3>Browse Today's Games</h3>
+                        <p>Find a jinx exchange partner for any game happening today or tomorrow!</p>
+                        <button class="btn btn-primary btn-large" data-navigate="find-match">See All Games</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Find Match - Now Game-Driven -->
+            <section id="find-match" class="tab-content">
+                <div class="card">
+                    <div class="games-header">
+                        <h2>🏟️ Upcoming Games</h2>
+                        <button id="refresh-games" class="btn btn-secondary btn-small">↻ Refresh</button>
+                    </div>
+                    <p class="games-subtitle">Tap any game to find a jinx partner. Real games from ESPN.</p>
+
+                    <!-- Day Toggle -->
+                    <div id="day-toggle" class="day-toggle">
+                        <button class="day-toggle-btn active" data-day="today">Today</button>
+                        <button class="day-toggle-btn" data-day="tomorrow">Tomorrow</button>
+                    </div>
+
+                    <!-- Sport Filters -->
+                    <div id="sport-filters" class="sport-filters">
+                        <button class="sport-filter-btn active" data-sport="all">All</button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="games-loading" class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading games from ESPN...</p>
+                    </div>
+
+                    <!-- Games Container -->
+                    <div id="games-container" class="games-container"></div>
+                </div>
+            </section>
+
+            <!-- My Pacts -->
+            <section id="my-pacts" class="tab-content">
+                <div class="card">
+                    <h2>📜 Your Jinx Pacts</h2>
+
+                    <div class="pact-filters">
+                        <button class="filter-btn active" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="pending">Pending Results</button>
+                        <button class="filter-btn" data-filter="completed">Completed</button>
+                    </div>
+
+                    <div id="pacts-list" class="pacts-list">
+                        <p class="empty-state">No pacts yet. Browse today's games to get started!</p>
+                    </div>
+                </div>
+
+                <div id="result-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <h3>📊 Log Game Result</h3>
+                        <div id="result-details"></div>
+                        <div class="form-group">
+                            <label>Did your team win?</label>
+                            <div class="result-buttons">
+                                <button class="result-btn" data-result="win">🎉 Yes!</button>
+                                <button class="result-btn" data-result="loss">😢 No</button>
+                                <button class="result-btn" data-result="tie">🤷 Tie</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Did you keep the pact? (Didn't watch your team)</label>
+                            <div class="result-buttons">
+                                <button class="honor-btn" data-honored="true">✅ Kept it</button>
+                                <button class="honor-btn" data-honored="false">😬 I peeked</button>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button id="submit-result" class="btn btn-primary" disabled>Submit Result</button>
+                            <button id="cancel-result" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section id="stats" class="tab-content">
+                <div class="card">
+                    <h2>📈 Your Jinx Statistics</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-value" id="stat-wins">0</div>
+                            <div class="stat-name">Wins with Pact</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📉</div>
+                            <div class="stat-value" id="stat-losses">0</div>
+                            <div class="stat-name">Losses with Pact</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🤝</div>
+                            <div class="stat-value" id="stat-honored">0</div>
+                            <div class="stat-name">Pacts Honored</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">👀</div>
+                            <div class="stat-value" id="stat-peeked">0</div>
+                            <div class="stat-name">Times Peeked</div>
+                        </div>
+                    </div>
+
+                    <div class="jinx-meter">
+                        <h3>Your Jinx-Breaking Power</h3>
+                        <div class="meter-container">
+                            <div class="meter-fill" id="jinx-meter-fill"></div>
+                        </div>
+                        <p class="meter-label" id="jinx-level-label">Build your record to unlock your jinx-breaking title!</p>
+                    </div>
+
+                    <div class="achievements">
+                        <h3>🏅 Achievements</h3>
+                        <div id="achievements-list" class="achievements-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔄 Reset Everything</h3>
+                    <p>Want to start fresh? This will delete all your data.</p>
+                    <button id="reset-data" class="btn btn-danger">Reset All Data</button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Team Selection Modal -->
+        <div id="team-select-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>🏈 Choose Your Team</h3>
+                <div id="team-select-content"></div>
+                <div class="modal-actions">
+                    <button id="cancel-team-select" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pact Confirmation Modal -->
+        <div id="pact-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>🤝 Propose a Jinx Pact</h3>
+                <div id="pact-details"></div>
+                <div class="modal-actions">
+                    <button id="confirm-pact" class="btn btn-primary">Seal the Pact</button>
+                    <button id="cancel-pact" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>The Jinx Exchange &copy; 2025 | For entertainment purposes only</p>
+            <p><small>Game data from ESPN. Results not guaranteed. Your jinx may vary.</small></p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
