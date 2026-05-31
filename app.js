@@ -289,6 +289,7 @@ class GamesService {
     constructor() {
         this.cache = new Map();
         this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
+        this.requestTimeout = 7000;
     }
 
     async fetchAllGames() {
@@ -341,9 +342,13 @@ class GamesService {
             }
         }
 
+        let timeoutId;
         try {
             const url = `${sport.url}?dates=${dateStr}`;
-            const response = await fetch(url);
+            const controller = new AbortController();
+            timeoutId = setTimeout(() => controller.abort(), this.requestTimeout);
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
@@ -360,8 +365,11 @@ class GamesService {
 
             return games;
         } catch (error) {
-            console.warn(`Error fetching ${sport.name} for ${dateStr}:`, error);
+            const reason = error.name === 'AbortError' ? 'request timed out' : error.message;
+            console.warn(`Error fetching ${sport.name} for ${dateStr}: ${reason}`);
             return [];
+        } finally {
+            clearTimeout(timeoutId);
         }
     }
 
@@ -1193,5 +1201,6 @@ class JinxExchangeApp {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('current-year').textContent = new Date().getFullYear();
     window.app = new JinxExchangeApp();
 });

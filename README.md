@@ -7,6 +7,7 @@ The Jinx Exchange is a playful static web app for sports fans who are convinced 
 - Pulls scoreboard data from public ESPN endpoints.
 - Lets users create local jinx pacts around real games.
 - Tracks pact history, results, achievements, and stats in browser storage.
+- Uses short request timeouts so one slow scoreboard feed does not stall the whole app.
 - Runs as a static HTML/CSS/JS app with no backend.
 
 ## Run Locally
